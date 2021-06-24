@@ -27,7 +27,7 @@ mongoose.connect(
     useFindAndModify: false,
   },
   (err) => {
-    if (!err) {
+    if (err) {
       console.error(err);
     }
     console.log('Mongodb ready');
