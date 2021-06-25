@@ -8,6 +8,12 @@ export const typeDefs = gql`
     maxParticipants: String
   }
 
+  type RangeParticipants {
+    min: String
+    max: String
+    defaultValue: String
+  }
+
   type GameUser {
     id: ID!
     displayName: String
@@ -19,6 +25,7 @@ export const typeDefs = gql`
   type Query {
     getGameUser(id: ID!): GameUser
     getRoom(shareId: String!): Room
+    getRangeParticipants: RangeParticipants
   }
 
   type Mutation {
