@@ -3,8 +3,11 @@ import { generateShareId } from '../helpers';
 import { Room } from '../models';
 import { CreateRoomArgs, GetRoomArgs } from './interfaces';
 
-const maxParticipantsLimit = 8;
-const minParticipantsLimit = 2;
+export const maxParticipantsLimit = 8;
+export const minParticipantsLimit = 2;
+export const defaultParticipantsValue = Math.round(
+  (maxParticipantsLimit + minParticipantsLimit) / 2
+);
 
 export const roomController = {
   async getRoom(_, { shareId }: GetRoomArgs) {
@@ -17,7 +20,10 @@ export const roomController = {
     return room;
   },
 
-  async createRoom(_, { maxParticipants = '3' }: CreateRoomArgs) {
+  async createRoom(
+    _,
+    { maxParticipants = `${defaultParticipantsValue}` }: CreateRoomArgs
+  ) {
     const maxParticipantsNum = Number(maxParticipants);
 
     if (
