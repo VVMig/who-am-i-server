@@ -1,4 +1,5 @@
 import { UserInputError } from 'apollo-server';
+import { IContext } from '../gql';
 import { generateShareId } from '../helpers';
 import { Room } from '../models';
 import { CreateRoomArgs, GetRoomArgs } from './interfaces';
@@ -11,7 +12,7 @@ export const defaultParticipantsValue = Math.round(
 
 export const roomController = {
   async getRoom(_, { shareId }: GetRoomArgs) {
-    const room = await Room.findOne({ shareId });
+    const room = await Room.findOne({ shareId }).populate('participants');
 
     if (!room) {
       throw new UserInputError('Room not found');
@@ -22,14 +23,13 @@ export const roomController = {
 
   async createRoom(
     _,
-    { maxParticipants = `${defaultParticipantsValue}` }: CreateRoomArgs
+    { maxParticipants = defaultParticipantsValue }: CreateRoomArgs
   ) {
-    const maxParticipantsNum = Number(maxParticipants);
+    const maxParticipantsNum = maxParticipants;
 
     if (
       maxParticipantsNum < minParticipantsLimit ||
-      maxParticipantsNum > maxParticipantsLimit ||
-      isNaN(maxParticipantsNum)
+      maxParticipantsNum > maxParticipantsLimit
     ) {
       throw new UserInputError(
         'The number of participants must not exceed 8 and cannot be less than 2'
@@ -40,7 +40,7 @@ export const roomController = {
 
     const room = await Room.create({
       shareId,
-      maxParticipants: Number(maxParticipants),
+      maxParticipants: maxParticipants,
     });
 
     return room;
