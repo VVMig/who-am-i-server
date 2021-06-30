@@ -45,5 +45,6 @@ export const typeDefs = gql`
     createGameUser(shareId: String!): GameUser
     joinRoom(shareId: String): Room
     leaveRoom: String
+    reconnectRoom: Room
   }
 `;

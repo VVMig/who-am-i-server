@@ -78,6 +78,34 @@ export const resolvers = {
 
       return room;
     },
+    async reconnectRoom(_, __, { cookies, res }: IContext) {
+      if (!cookies[CookiesType.GameAuth]) {
+        throw new UserInputError('You do not have any game session');
+      }
+
+      const { roomShareId, gameUserId } = JSON.parse(
+        cookies[CookiesType.GameAuth]
+      );
+
+      const room = await roomController.getRoom(_, { shareId: roomShareId });
+      const gameUser = await gameUserController.getGameUser(_, {
+        id: gameUserId,
+      });
+
+      if (!room || !gameUser) {
+        throw new UserInputError('Wrong data');
+      }
+
+      if (
+        !room.participants.find((participant) => participant.id === gameUser.id)
+      ) {
+        res.clearCookie(CookiesType.GameAuth);
+
+        throw new UserInputError('You are not a member of this room');
+      }
+
+      return room;
+    },
     async leaveRoom(_, __, { res, cookies }: IContext) {
       if (!cookies[CookiesType.GameAuth]) {
         throw new UserInputError('You have already left this room');
