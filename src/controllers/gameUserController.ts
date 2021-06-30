@@ -3,17 +3,18 @@ import faker from 'faker';
 import { isValidObjectId } from 'mongoose';
 
 import { GameUser } from '../models';
-import { GetGameUserArgs, GetRoomArgs } from './interfaces';
+import { GetGameUserArgs, CreateGameUserArgs } from './interfaces';
 import { roomController } from './roomController';
 
 export const gameUserController = {
-  async createGameUser(_, { shareId }: GetRoomArgs) {
+  async createGameUser(_, { shareId, isAdmin }: CreateGameUserArgs) {
     const room = await roomController.getRoom(null, { shareId });
 
     const gameUser = await GameUser.create({
       displayName: faker.name.firstName(),
       room,
       color: faker.internet.color(),
+      isAdmin: isAdmin || false,
     });
 
     await gameUser.save();
@@ -25,8 +26,11 @@ export const gameUserController = {
       throw new UserInputError('Wrong user id');
     }
 
-    const gameUser = await GameUser.findById(id);
+    const gameUser = await GameUser.findById(id).populate('room');
 
     return gameUser;
+  },
+  async removeGameUser(_, { id }: GetGameUserArgs) {
+    await GameUser.findByIdAndDelete(id);
   },
 };
