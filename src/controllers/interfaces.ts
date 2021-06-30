@@ -1,5 +1,5 @@
 export interface CreateRoomArgs {
-  maxParticipants?: string;
+  maxParticipants?: number;
 }
 
 export interface GetRoomArgs {
