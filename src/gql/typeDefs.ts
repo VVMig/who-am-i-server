@@ -5,13 +5,13 @@ export const typeDefs = gql`
     id: ID!
     shareId: String
     participants: [GameUser]
-    maxParticipants: String
+    maxParticipants: Int
   }
 
   type RangeParticipants {
-    min: String
-    max: String
-    defaultValue: String
+    min: Int
+    max: Int
+    defaultValue: Int
   }
 
   type GameUser {
@@ -20,6 +20,17 @@ export const typeDefs = gql`
     color: String
     guessName: String
     room: Room
+    isAdmin: Boolean
+  }
+
+  type GameInformation {
+    gameUser: GameUser
+    roomShare: Room
+  }
+
+  input GameInformationInput {
+    gameUserId: String
+    roomShareId: String
   }
 
   type Query {
@@ -29,7 +40,8 @@ export const typeDefs = gql`
   }
 
   type Mutation {
-    createRoom(maxParticipants: String): Room!
+    createRoom(maxParticipants: Int): Room!
     createGameUser(shareId: String!): GameUser
+    joinRoom(gameInformation: GameInformationInput!): GameInformation
   }
 `;

@@ -5,6 +5,8 @@ import {
   minParticipantsLimit,
   defaultParticipantsValue,
 } from '../controllers';
+import { CreateRoomArgs } from '../controllers/interfaces';
+import { IContext } from './interfaces';
 
 export const resolvers = {
   Query: {
@@ -19,7 +21,26 @@ export const resolvers = {
     },
   },
   Mutation: {
-    createRoom: roomController.createRoom,
+    async createRoom(
+      _,
+      { maxParticipants }: CreateRoomArgs,
+      { res }: IContext
+    ) {
+      const room = await roomController.createRoom(_, { maxParticipants });
+      const gameUser = await gameUserController.createGameUser(_, {
+        shareId: room.shareId,
+      });
+
+      res.cookie(
+        'gameAuth',
+        JSON.stringify({
+          gameUserId: gameUser.id,
+          roomShareId: room.shareId,
+        })
+      );
+
+      return room;
+    },
     createGameUser: gameUserController.createGameUser,
   },
 };
