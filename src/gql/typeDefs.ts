@@ -37,6 +37,7 @@ export const typeDefs = gql`
     getGameUser(id: ID!): GameUser
     getRoom(shareId: String!): Room
     getRangeParticipants: RangeParticipants
+    isRoomExist: Boolean
   }
 
   type Mutation {
@@ -44,5 +45,6 @@ export const typeDefs = gql`
     createGameUser(shareId: String!): GameUser
     joinRoom(shareId: String): Room
     leaveRoom: String
+    reconnectRoom: Room
   }
 `;
