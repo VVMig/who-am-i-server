@@ -20,7 +20,6 @@ export const roomController = {
 
     return room;
   },
-
   async createRoom(
     _,
     { maxParticipants = defaultParticipantsValue }: CreateRoomArgs
@@ -44,5 +43,8 @@ export const roomController = {
     });
 
     return room;
+  },
+  async removeRoom(_, { shareId }: GetRoomArgs) {
+    await Room.deleteOne({ shareId });
   },
 };

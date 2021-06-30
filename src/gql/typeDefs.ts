@@ -42,6 +42,7 @@ export const typeDefs = gql`
   type Mutation {
     createRoom(maxParticipants: Int): Room!
     createGameUser(shareId: String!): GameUser
-    joinRoom(gameInformation: GameInformationInput!): GameInformation
+    joinRoom(shareId: String): Room
+    leaveRoom: String
   }
 `;
