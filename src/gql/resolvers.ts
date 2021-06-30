@@ -10,6 +10,7 @@ import {
 import { IContext } from './interfaces';
 import { setGameAuthCookie } from '../helpers';
 import { UserInputError } from 'apollo-server';
+import { CookiesType } from '../CookiesType';
 
 export const resolvers = {
   Query: {
@@ -62,11 +63,13 @@ export const resolvers = {
       return room;
     },
     async leaveRoom(_, __, { res, cookies }: IContext) {
-      if (!cookies['gameAuth']) {
+      if (!cookies[CookiesType.GameAuth]) {
         throw new UserInputError('You have already left this room');
       }
 
-      const { roomShareId, gameUserId } = JSON.parse(cookies['gameAuth']);
+      const { roomShareId, gameUserId } = JSON.parse(
+        cookies[CookiesType.GameAuth]
+      );
 
       const room = await roomController.getRoom(_, { shareId: roomShareId });
       const gameUser = await gameUserController.getGameUser(_, {
@@ -89,7 +92,7 @@ export const resolvers = {
 
       await gameUserController.removeGameUser(_, { id: gameUser.id });
 
-      res.clearCookie('gameAuth');
+      res.clearCookie(CookiesType.GameAuth);
 
       return 'Successfully exited';
     },

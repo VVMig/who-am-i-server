@@ -1,4 +1,5 @@
 import { Response } from 'express';
+import { CookiesType } from '../CookiesType';
 
 export const setGameAuthCookie = (
   res: Response,
@@ -6,7 +7,7 @@ export const setGameAuthCookie = (
   roomShareId: string
 ) => {
   res.cookie(
-    'gameAuth',
+    CookiesType.GameAuth,
     JSON.stringify({
       gameUserId,
       roomShareId,
