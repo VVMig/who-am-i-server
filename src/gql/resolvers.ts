@@ -7,7 +7,7 @@ import {
   CreateRoomArgs,
   GetRoomArgs,
 } from '../controllers';
-import { IContext } from './interfaces';
+import { IContext, JoinRoomArgs } from './interfaces';
 import { setGameAuthCookie } from '../helpers';
 import { UserInputError } from 'apollo-server';
 import { CookiesType } from '../CookiesType';
@@ -22,6 +22,22 @@ export const resolvers = {
         max: maxParticipantsLimit,
         defaultValue: defaultParticipantsValue,
       };
+    },
+    async isRoomExist(_, __, { cookies, res }: IContext) {
+      if (!cookies[CookiesType.GameAuth]) {
+        return false;
+      }
+
+      const { roomShareId } = JSON.parse(cookies[CookiesType.GameAuth]);
+
+      try {
+        await roomController.getRoom(_, { shareId: roomShareId });
+      } catch (error) {
+        res.clearCookie(CookiesType.GameAuth);
+        return false;
+      }
+
+      return true;
     },
   },
   Mutation: {
@@ -45,7 +61,7 @@ export const resolvers = {
       return room;
     },
     createGameUser: gameUserController.createGameUser,
-    async joinRoom(_, { shareId }: GetRoomArgs, { res }: IContext) {
+    async joinRoom(_, { shareId }: JoinRoomArgs, { res }: IContext) {
       const room = await roomController.getRoom(_, { shareId });
 
       if (room.participants.length >= maxParticipantsLimit) {
