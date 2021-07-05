@@ -1446,7 +1446,7 @@ apollo-server-caching@^0.7.0:
   dependencies:
     lru-cache "^6.0.0"
 
-apollo-server-core@^1.4.0:
+apollo-server-core@^1.3.6:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/apollo-server-core/-/apollo-server-core-1.4.0.tgz#4faff7f110bfdd6c3f47008302ae24140f94c592"
   integrity sha512-BP1Vh39krgEjkQxbjTdBURUjLHbFq1zeOChDJgaRsMxGtlhzuLWwwC6lLdPatN8jEPbeHq8Tndp9QZ3iQZOKKA==
@@ -1499,13 +1499,13 @@ apollo-server-errors@^2.5.0:
   resolved "https://registry.yarnpkg.com/apollo-server-errors/-/apollo-server-errors-2.5.0.tgz#5d1024117c7496a2979e3e34908b5685fe112b68"
   integrity sha512-lO5oTjgiC3vlVg2RKr3RiXIIQ5pGXBFxYGGUkKDhTud3jMIhs+gel8L8zsEjKaKxkjHhCQAA/bcEfYiKkGQIvA==
 
-apollo-server-express@1:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/apollo-server-express/-/apollo-server-express-1.4.0.tgz#7d7c58d6d6f9892b83fe575669093bb66738b125"
-  integrity sha512-zkH00nxhLnJfO0HgnNPBTfZw8qI5ILaPZ5TecMCI9+Y9Ssr2b0bFr9pBRsXy9eudPhI+/O4yqegSUsnLdF/CPw==
+apollo-server-express@1.3.6:
+  version "1.3.6"
+  resolved "https://registry.yarnpkg.com/apollo-server-express/-/apollo-server-express-1.3.6.tgz#2120b05021a87def44fafd846e8a0e2a32852db7"
+  integrity sha1-ISCwUCGofe9E+v2EbooOKjKFLbc=
   dependencies:
-    apollo-server-core "^1.4.0"
-    apollo-server-module-graphiql "^1.4.0"
+    apollo-server-core "^1.3.6"
+    apollo-server-module-graphiql "^1.3.4"
 
 apollo-server-express@^2.25.2:
   version "2.25.2"
@@ -1530,7 +1530,12 @@ apollo-server-express@^2.25.2:
     subscriptions-transport-ws "^0.9.19"
     type-is "^1.6.16"
 
-apollo-server-module-graphiql@^1.4.0:
+apollo-server-module-graphiql@1.3.4:
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/apollo-server-module-graphiql/-/apollo-server-module-graphiql-1.3.4.tgz#50399b7c51b7267d0c841529f5173e5fc7304de4"
+  integrity sha1-UDmbfFG3Jn0MhBUp9Rc+X8cwTeQ=
+
+apollo-server-module-graphiql@^1.3.4:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/apollo-server-module-graphiql/-/apollo-server-module-graphiql-1.4.0.tgz#c559efa285578820709f1769bb85d3b3eed3d8ec"
   integrity sha512-GmkOcb5he2x5gat+TuiTvabnBf1m4jzdecal3XbXBh/Jg+kx4hcvO3TTDFQ9CuTprtzdcVyA11iqG7iOMOt7vA==
@@ -1633,6 +1638,11 @@ astral-regex@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/astral-regex/-/astral-regex-2.0.0.tgz#483143c567aeed4785759c0865786dc77d7d2e31"
   integrity sha512-Z7tMw1ytTXt5jqMcOP+OQteU1VuNK9Y02uuJtKQ1Sv69jXQKKg5cibLwGJow8yzZP+eAc18EmLGPal0bp36rvQ==
+
+async-limiter@~1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/async-limiter/-/async-limiter-1.0.1.tgz#dd379e94f0db8310b08291f9d64c3209766617fd"
+  integrity sha512-csOlWGAcRFJaI6m+F2WKdnMKr4HhdhFVBk0H/QbJFMCr+uO2kwohwXQPxw/9OCxp05r5ghVBFSyioixx3gfkNQ==
 
 async-retry@^1.2.1:
   version "1.3.1"
@@ -2823,7 +2833,7 @@ graphql-extensions@^0.15.0:
     apollo-server-env "^3.1.0"
     apollo-server-types "^0.9.0"
 
-graphql-subscriptions@^1.0.0:
+graphql-subscriptions@^1.0.0, graphql-subscriptions@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/graphql-subscriptions/-/graphql-subscriptions-1.2.1.tgz#2142b2d729661ddf967b7388f7cf1dd4cf2e061d"
   integrity sha512-95yD/tKi24q8xYa7Q9rhQN16AYj5wPbrb8tmHGM3WRc9EBmWrG/0kkMl+tQG8wcEuE9ibR4zyOM31p5Sdr2v4g==
@@ -4348,6 +4358,17 @@ strip-json-comments@~2.0.1:
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
   integrity sha1-PFMZQukIwml8DsNEhYwobHygpgo=
 
+subscriptions-transport-ws@0.9.14:
+  version "0.9.14"
+  resolved "https://registry.yarnpkg.com/subscriptions-transport-ws/-/subscriptions-transport-ws-0.9.14.tgz#a39e08edba89ee4cfd95f30484c55d865f5d8451"
+  integrity sha512-n1+mgupVdJn1MIls1ZhSJurJjc+islp7Tv9EIaEJ3HAd9DaINneKq0KRqOYNOrvUI7orVWGomEnlIxoudjfbeA==
+  dependencies:
+    backo2 "^1.0.2"
+    eventemitter3 "^3.1.0"
+    iterall "^1.2.1"
+    symbol-observable "^1.0.4"
+    ws "^5.2.0"
+
 subscriptions-transport-ws@^0.9.18, subscriptions-transport-ws@^0.9.19:
   version "0.9.19"
   resolved "https://registry.yarnpkg.com/subscriptions-transport-ws/-/subscriptions-transport-ws-0.9.19.tgz#10ca32f7e291d5ee8eb728b9c02e43c52606cdcf"
@@ -4751,6 +4772,13 @@ ws@7.4.5:
   version "7.4.5"
   resolved "https://registry.yarnpkg.com/ws/-/ws-7.4.5.tgz#a484dd851e9beb6fdb420027e3885e8ce48986c1"
   integrity sha512-xzyu3hFvomRfXKH8vOFMU3OguG6oOvhXMo3xsGy3xWExqaM2dxBbVxuD99O7m3ZUFMvvscsZDqxfgMaRr/Nr1g==
+
+ws@^5.2.0:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-5.2.3.tgz#05541053414921bc29c63bee14b8b0dd50b07b3d"
+  integrity sha512-jZArVERrMsKUatIdnLzqvcfydI85dvd/Fp1u/VOpfdDWQ4c9qWXe+VIeAbQ5FrDwciAkr+lzofXLz3Kuf26AOA==
+  dependencies:
+    async-limiter "~1.0.0"
 
 "ws@^5.2.0 || ^6.0.0 || ^7.0.0":
   version "7.5.0"
