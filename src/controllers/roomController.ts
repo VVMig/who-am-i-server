@@ -1,5 +1,4 @@
 import { UserInputError } from 'apollo-server';
-import { IContext } from '../gql';
 import { generateShareId } from '../helpers';
 import { Room } from '../models';
 import { CreateRoomArgs, GetRoomArgs } from './interfaces';

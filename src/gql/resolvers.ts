@@ -5,12 +5,14 @@ import {
   minParticipantsLimit,
   defaultParticipantsValue,
   CreateRoomArgs,
-  GetRoomArgs,
 } from '../controllers';
 import { IContext, JoinRoomArgs } from './interfaces';
 import { setGameAuthCookie } from '../helpers';
-import { UserInputError } from 'apollo-server';
+import { PubSub, UserInputError } from 'apollo-server';
 import { CookiesType } from '../CookiesType';
+import { PubSubEnum } from './PubSubEnum';
+
+const pubsub = new PubSub();
 
 export const resolvers = {
   Query: {
@@ -76,6 +78,10 @@ export const resolvers = {
 
       setGameAuthCookie(res, gameUser.id, room.shareId);
 
+      pubsub.publish(PubSubEnum.NEW_USER, {
+        newGameUser: gameUser,
+      });
+
       return room;
     },
     async reconnectRoom(_, __, { cookies, res }: IContext) {
@@ -139,6 +145,11 @@ export const resolvers = {
       res.clearCookie(CookiesType.GameAuth);
 
       return 'Successfully exited';
+    },
+  },
+  Subscription: {
+    newGameUser: {
+      subscribe: () => pubsub.asyncIterator(PubSubEnum.NEW_USER),
     },
   },
 };

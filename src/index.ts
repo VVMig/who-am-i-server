@@ -1,13 +1,19 @@
 import express from 'express';
-import { graphqlExpress, graphiqlExpress } from 'apollo-server-express';
+import { graphiqlExpress, graphqlExpress } from 'apollo-server-express';
 import { makeExecutableSchema } from 'graphql-tools';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import { execute, subscribe } from 'graphql';
 
 import { typeDefs, resolvers } from './gql';
 import { corsConfigs } from './configs';
+import { createServer } from 'http';
+import { SubscriptionServer } from 'subscriptions-transport-ws';
+import { PubSub } from 'graphql-subscriptions';
+
+const PORT = process.env.PORT || 4000;
 
 dotenv.config();
 
@@ -35,10 +41,29 @@ app.use(
   })
 );
 
-app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
+app.use(
+  '/graphiql',
+  graphiqlExpress({
+    endpointURL: '/graphql',
+    subscriptionsEndpoint: `ws://localhost:${PORT}/subscriptions`,
+  })
+);
 
-app.listen(4000, () => {
-  console.log('Go to http://localhost:4000/graphiql to run queries!');
+const ws = createServer(app);
+
+ws.listen(PORT, () => {
+  console.log(`Apollo Server is now running on http://localhost:${PORT}`);
+  new SubscriptionServer(
+    {
+      execute,
+      subscribe,
+      schema,
+    },
+    {
+      server: ws,
+      path: '/subscriptions',
+    }
+  );
 });
 
 mongoose.connect(
