@@ -47,4 +47,8 @@ export const typeDefs = gql`
     leaveRoom: String
     reconnectRoom: Room
   }
+
+  type Subscription {
+    newGameUser: GameUser
+  }
 `;
