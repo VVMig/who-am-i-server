@@ -78,8 +78,8 @@ export const resolvers = {
 
       setGameAuthCookie(res, gameUser.id, room.shareId);
 
-      pubsub.publish(PubSubEnum.NEW_USER, {
-        newGameUser: gameUser,
+      pubsub.publish(PubSubEnum.USER_UPDATE, {
+        gameUserUpdate: room,
       });
 
       return room;
@@ -142,14 +142,18 @@ export const resolvers = {
 
       await gameUserController.removeGameUser(_, { id: gameUser.id });
 
+      pubsub.publish(PubSubEnum.USER_UPDATE, {
+        gameUserUpdate: room,
+      });
+
       res.clearCookie(CookiesType.GameAuth);
 
       return 'Successfully exited';
     },
   },
   Subscription: {
-    newGameUser: {
-      subscribe: () => pubsub.asyncIterator(PubSubEnum.NEW_USER),
+    gameUserUpdate: {
+      subscribe: () => pubsub.asyncIterator(PubSubEnum.USER_UPDATE),
     },
   },
 };

@@ -49,6 +49,6 @@ export const typeDefs = gql`
   }
 
   type Subscription {
-    newGameUser: GameUser
+    gameUserUpdate: Room
   }
 `;
