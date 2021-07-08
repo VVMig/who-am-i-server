@@ -5,10 +5,11 @@ import {
   minParticipantsLimit,
   defaultParticipantsValue,
   CreateRoomArgs,
+  GetGameUserArgs,
 } from '../controllers';
 import { IContext, JoinRoomArgs } from './interfaces';
 import { setGameAuthCookie } from '../helpers';
-import { PubSub, UserInputError } from 'apollo-server';
+import { ForbiddenError, PubSub, UserInputError } from 'apollo-server';
 import { CookiesType } from '../CookiesType';
 import { PubSubEnum } from './PubSubEnum';
 
@@ -30,10 +31,13 @@ export const resolvers = {
         return false;
       }
 
-      const { roomShareId } = JSON.parse(cookies[CookiesType.GameAuth]);
+      const { roomShareId, gameUserId } = JSON.parse(
+        cookies[CookiesType.GameAuth]
+      );
 
       try {
         await roomController.getRoom(_, { shareId: roomShareId });
+        await gameUserController.getGameUser(_, { id: gameUserId });
       } catch (error) {
         res.clearCookie(CookiesType.GameAuth);
         return false;
@@ -43,6 +47,44 @@ export const resolvers = {
     },
   },
   Mutation: {
+    async kickPlayer(_, { id }: GetGameUserArgs, { cookies }: IContext) {
+      if (!cookies[CookiesType.GameAuth]) {
+        throw new UserInputError('You do not have any game session');
+      }
+
+      const { roomShareId, gameUserId } = JSON.parse(
+        cookies[CookiesType.GameAuth]
+      );
+
+      const room = await roomController.getRoom(_, { shareId: roomShareId });
+      const adminUser = await gameUserController.getGameUser(_, {
+        id: gameUserId,
+      });
+
+      if (!adminUser.isAdmin) {
+        throw new ForbiddenError('You do not have permission to kick players');
+      }
+
+      const kickCandidate = await gameUserController.getGameUser(_, { id });
+
+      await gameUserController.removeGameUser(_, { id });
+
+      room.participants = room.participants.filter(
+        (participant) => participant.id !== kickCandidate.id
+      );
+
+      await room.save();
+
+      pubsub.publish(PubSubEnum.USER_KICKED, {
+        kickedGameUser: id,
+      });
+
+      pubsub.publish(PubSubEnum.USER_UPDATE, {
+        gameUserUpdate: room,
+      });
+
+      return room;
+    },
     async createRoom(
       _,
       { maxParticipants }: CreateRoomArgs,
@@ -99,6 +141,7 @@ export const resolvers = {
       });
 
       if (!room || !gameUser) {
+        res.clearCookie(CookiesType.GameAuth);
         throw new UserInputError('Wrong data');
       }
 
@@ -127,6 +170,7 @@ export const resolvers = {
       });
 
       if (!room || !gameUser) {
+        res.clearCookie(CookiesType.GameAuth);
         throw new UserInputError('Wrong data');
       }
 
@@ -137,6 +181,12 @@ export const resolvers = {
       if (!room.participants.length) {
         await roomController.removeRoom(_, { shareId: room.shareId });
       } else {
+        const newAdmin = await gameUserController.getGameUser(_, {
+          id: room.participants[0].id,
+        });
+        newAdmin.isAdmin = true;
+        await newAdmin.save();
+        room.participants[0].isAdmin = true;
         await room.save();
       }
 
@@ -154,6 +204,9 @@ export const resolvers = {
   Subscription: {
     gameUserUpdate: {
       subscribe: () => pubsub.asyncIterator(PubSubEnum.USER_UPDATE),
+    },
+    kickedGameUser: {
+      subscribe: () => pubsub.asyncIterator(PubSubEnum.USER_KICKED),
     },
   },
 };

@@ -46,9 +46,11 @@ export const typeDefs = gql`
     joinRoom(shareId: String): Room
     leaveRoom: String
     reconnectRoom: Room
+    kickPlayer(id: String!): Room
   }
 
   type Subscription {
     gameUserUpdate: Room
+    kickedGameUser: String
   }
 `;
