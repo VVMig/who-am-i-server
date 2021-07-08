@@ -28,6 +28,10 @@ export const gameUserController = {
 
     const gameUser = await GameUser.findById(id).populate('room');
 
+    if (!gameUser) {
+      throw new UserInputError('Game user not found');
+    }
+
     return gameUser;
   },
   async removeGameUser(_, { id }: GetGameUserArgs) {

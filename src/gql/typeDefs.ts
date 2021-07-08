@@ -50,7 +50,7 @@ export const typeDefs = gql`
   }
 
   type Subscription {
-    gameUserUpdate: Room
-    kickedGameUser: String
+    gameUserUpdate(shareId: String): Room
+    kickedGameUser(id: String): String
   }
 `;

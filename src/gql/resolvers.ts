@@ -7,9 +7,21 @@ import {
   CreateRoomArgs,
   GetGameUserArgs,
 } from '../controllers';
-import { IContext, JoinRoomArgs } from './interfaces';
+import {
+  GameUserKickedPayload,
+  GameUserKickedVariables,
+  GameUserUpdatePayload,
+  GameUserUpdateVariables,
+  IContext,
+  JoinRoomArgs,
+} from './interfaces';
 import { setGameAuthCookie } from '../helpers';
-import { ForbiddenError, PubSub, UserInputError } from 'apollo-server';
+import {
+  ForbiddenError,
+  PubSub,
+  UserInputError,
+  withFilter,
+} from 'apollo-server';
 import { CookiesType } from '../CookiesType';
 import { PubSubEnum } from './PubSubEnum';
 
@@ -203,10 +215,26 @@ export const resolvers = {
   },
   Subscription: {
     gameUserUpdate: {
-      subscribe: () => pubsub.asyncIterator(PubSubEnum.USER_UPDATE),
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(PubSubEnum.USER_UPDATE),
+        (
+          { gameUserUpdate }: GameUserUpdatePayload,
+          { shareId }: GameUserUpdateVariables
+        ) => {
+          return gameUserUpdate.shareId === shareId;
+        }
+      ),
     },
     kickedGameUser: {
-      subscribe: () => pubsub.asyncIterator(PubSubEnum.USER_KICKED),
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(PubSubEnum.USER_KICKED),
+        (
+          { kickedGameUser }: GameUserKickedPayload,
+          { id }: GameUserKickedVariables
+        ) => {
+          return kickedGameUser === id;
+        }
+      ),
     },
   },
 };
