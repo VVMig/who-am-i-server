@@ -1,5 +1,6 @@
 import { Response } from 'express';
 import { GetRoomArgs } from '../controllers';
+import { IRoom } from '../models';
 
 export interface IContext {
   cookies: Record<string, string>;
@@ -8,4 +9,20 @@ export interface IContext {
 
 export interface JoinRoomArgs extends GetRoomArgs {
   isReconnect: boolean;
+}
+
+export interface GameUserUpdatePayload {
+  gameUserUpdate: IRoom;
+}
+
+export interface GameUserUpdateVariables {
+  shareId: string;
+}
+
+export interface GameUserKickedPayload {
+  kickedGameUser: string;
+}
+
+export interface GameUserKickedVariables {
+  id: string;
 }

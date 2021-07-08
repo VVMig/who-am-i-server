@@ -11,7 +11,6 @@ import { typeDefs, resolvers } from './gql';
 import { corsConfigs } from './configs';
 import { createServer } from 'http';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
-import { PubSub } from 'graphql-subscriptions';
 
 const PORT = process.env.PORT || 4000;
 
