@@ -6,6 +6,7 @@ export const typeDefs = gql`
     shareId: String
     participants: [GameUser]
     maxParticipants: Int
+    gameStage: String
   }
 
   type RangeParticipants {
@@ -21,16 +22,7 @@ export const typeDefs = gql`
     guessName: String
     room: Room
     isAdmin: Boolean
-  }
-
-  type GameInformation {
-    gameUser: GameUser
-    roomShare: Room
-  }
-
-  input GameInformationInput {
-    gameUserId: String
-    roomShareId: String
+    isFinish: Boolean
   }
 
   type Query {
@@ -47,10 +39,12 @@ export const typeDefs = gql`
     leaveRoom: String
     reconnectRoom: Room
     kickPlayer(id: String!): Room
+    waitStageNext: Room
   }
 
   type Subscription {
     gameUserUpdate(shareId: String): Room
     kickedGameUser(id: String): String
+    roomStage(shareId: String): Room
   }
 `;

@@ -14,6 +14,8 @@ import {
   GameUserUpdateVariables,
   IContext,
   JoinRoomArgs,
+  RoomUpdatePayload,
+  RoomUpdateVariables,
 } from './interfaces';
 import { setGameAuthCookie } from '../helpers';
 import {
@@ -24,6 +26,7 @@ import {
 } from 'apollo-server';
 import { CookiesType } from '../CookiesType';
 import { PubSubEnum } from './PubSubEnum';
+import { GameStage } from '../GameStage';
 
 const pubsub = new PubSub();
 
@@ -59,6 +62,40 @@ export const resolvers = {
     },
   },
   Mutation: {
+    async waitStageNext(_, __, { cookies }: IContext) {
+      if (!cookies[CookiesType.GameAuth]) {
+        throw new UserInputError('You do not have any game session');
+      }
+
+      const { roomShareId, gameUserId } = JSON.parse(
+        cookies[CookiesType.GameAuth]
+      );
+
+      console.log('1');
+
+      const room = await roomController.getRoom(_, { shareId: roomShareId });
+      const adminUser = await gameUserController.getGameUser(_, {
+        id: gameUserId,
+      });
+
+      if (!adminUser.isAdmin) {
+        throw new ForbiddenError('You do not have permission to start game');
+      }
+
+      if (room.participants.length !== room.maxParticipants) {
+        throw new UserInputError('Wait all players');
+      }
+
+      room.gameStage = GameStage.NAME_STAGE;
+
+      await room.save();
+
+      pubsub.publish(PubSubEnum.ROOM_STAGE, {
+        roomStage: room,
+      });
+
+      return room;
+    },
     async kickPlayer(_, { id }: GetGameUserArgs, { cookies }: IContext) {
       if (!cookies[CookiesType.GameAuth]) {
         throw new UserInputError('You do not have any game session');
@@ -233,6 +270,17 @@ export const resolvers = {
           { id }: GameUserKickedVariables
         ) => {
           return kickedGameUser === id;
+        }
+      ),
+    },
+    roomStage: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(PubSubEnum.ROOM_STAGE),
+        (
+          { roomStage }: RoomUpdatePayload,
+          { shareId }: RoomUpdateVariables
+        ) => {
+          return roomStage.shareId === shareId;
         }
       ),
     },

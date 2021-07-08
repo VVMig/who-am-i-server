@@ -26,3 +26,11 @@ export interface GameUserKickedPayload {
 export interface GameUserKickedVariables {
   id: string;
 }
+
+export interface RoomUpdatePayload {
+  roomStage: IRoom;
+}
+
+export interface RoomUpdateVariables {
+  shareId: string;
+}
