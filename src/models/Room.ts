@@ -8,6 +8,8 @@ export interface IRoom extends Document {
   participants: IGameUser[];
   maxParticipants: number;
   gameStage: GameStage;
+  nowNaming?: IGameUser;
+  nameSeter?: IGameUser;
 }
 
 const roomSchema: Schema<IRoom> = new Schema({
@@ -27,6 +29,14 @@ const roomSchema: Schema<IRoom> = new Schema({
   gameStage: {
     type: String,
     default: GameStage.WAIT_STAGE,
+  },
+  nowNaming: {
+    type: Schema.Types.ObjectId,
+    ref: 'GameUser',
+  },
+  nameSeter: {
+    type: Schema.Types.ObjectId,
+    ref: 'GameUser',
   },
 });
 
