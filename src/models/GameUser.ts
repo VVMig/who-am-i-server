@@ -8,6 +8,7 @@ export interface IGameUser extends Document {
   room: IRoom;
   guessName: string;
   isAdmin: boolean;
+  isFinal: boolean;
 }
 
 const gameUserSchema: Schema<IGameUser> = new Schema({
@@ -25,6 +26,10 @@ const gameUserSchema: Schema<IGameUser> = new Schema({
     type: String,
   },
   isAdmin: {
+    type: Boolean,
+    default: false,
+  },
+  isFinish: {
     type: Boolean,
     default: false,
   },

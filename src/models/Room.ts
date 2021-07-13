@@ -1,4 +1,5 @@
 import { model, Schema, Document, Model } from 'mongoose';
+import { GameStage } from '../GameStage';
 
 import { IGameUser } from './GameUser';
 
@@ -6,6 +7,7 @@ export interface IRoom extends Document {
   shareId: string;
   participants: IGameUser[];
   maxParticipants: number;
+  gameStage: GameStage;
 }
 
 const roomSchema: Schema<IRoom> = new Schema({
@@ -21,6 +23,10 @@ const roomSchema: Schema<IRoom> = new Schema({
   ],
   maxParticipants: {
     type: Number,
+  },
+  gameStage: {
+    type: String,
+    default: GameStage.WAIT_STAGE,
   },
 });
 
