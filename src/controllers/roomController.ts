@@ -11,7 +11,10 @@ export const defaultParticipantsValue = Math.round(
 
 export const roomController = {
   async getRoom(_, { shareId }: GetRoomArgs) {
-    const room = await Room.findOne({ shareId }).populate('participants');
+    const room = await Room.findOne({ shareId })
+      .populate('participants')
+      .populate('nowNaming')
+      .populate('nameSeter');
 
     if (!room) {
       throw new UserInputError('Room not found');
