@@ -1,6 +1,7 @@
 import { UserInputError } from 'apollo-server';
 import faker from 'faker';
 import { isValidObjectId } from 'mongoose';
+import { generateGuessQueue } from '../helpers';
 
 import { GameUser } from '../models';
 import { GetGameUserArgs, CreateGameUserArgs } from './interfaces';
@@ -26,7 +27,10 @@ export const gameUserController = {
       throw new UserInputError('Wrong user id');
     }
 
-    const gameUser = await GameUser.findById(id).populate('room');
+    const gameUser = await GameUser.findById(id)
+      .populate('room')
+      .populate('namingUser')
+      .populate('seterUser');
 
     if (!gameUser) {
       throw new UserInputError('Game user not found');
