@@ -7,6 +7,8 @@ export const typeDefs = gql`
     participants: [GameUser]
     maxParticipants: Int
     gameStage: String
+    nowNaming: GameUser
+    nameSeter: GameUser
   }
 
   type RangeParticipants {
@@ -40,6 +42,8 @@ export const typeDefs = gql`
     reconnectRoom: Room
     kickPlayer(id: String!): Room
     waitStageNext: Room
+    guessName(id: String!, name: String!): Room
+    nameStageNext: Room
   }
 
   type Subscription {

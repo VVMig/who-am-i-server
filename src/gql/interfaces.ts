@@ -34,3 +34,8 @@ export interface RoomUpdatePayload {
 export interface RoomUpdateVariables {
   shareId: string;
 }
+
+export interface GuessNameArgs {
+  id: string;
+  name: string;
+}
