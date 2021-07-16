@@ -9,6 +9,8 @@ export interface IGameUser extends Document {
   guessName: string;
   isAdmin: boolean;
   isFinal: boolean;
+  namingUser: IGameUser;
+  seterUser: IGameUser;
 }
 
 const gameUserSchema: Schema<IGameUser> = new Schema({
@@ -32,6 +34,14 @@ const gameUserSchema: Schema<IGameUser> = new Schema({
   isFinish: {
     type: Boolean,
     default: false,
+  },
+  namingUser: {
+    type: Schema.Types.ObjectId,
+    ref: 'GameUser',
+  },
+  seterUser: {
+    type: Schema.Types.ObjectId,
+    ref: 'GameUser',
   },
 });
 

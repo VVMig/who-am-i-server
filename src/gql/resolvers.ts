@@ -18,7 +18,7 @@ import {
   RoomUpdatePayload,
   RoomUpdateVariables,
 } from './interfaces';
-import { nextNamingStep, setGameAuthCookie } from '../helpers';
+import { generateGuessQueue, setGameAuthCookie } from '../helpers';
 import {
   ForbiddenError,
   PubSub,
@@ -87,8 +87,6 @@ export const resolvers = {
 
       room.gameStage = GameStage.PLAY_STAGE;
 
-      await nextNamingStep(room);
-
       await room.save();
 
       pubsub.publish(PubSubEnum.ROOM_STAGE, {
@@ -102,8 +100,6 @@ export const resolvers = {
         throw new UserInputError('You do not have any game session');
       }
 
-      console.log(id, name);
-
       const { roomShareId, gameUserId } = JSON.parse(
         cookies[CookiesType.GameAuth]
       );
@@ -116,11 +112,10 @@ export const resolvers = {
         id,
       });
 
-      if (
-        room.nameSeter.id !== gameUser.id ||
-        room.nowNaming.id !== namingUser.id
-      ) {
-        throw new UserInputError('It is not your turn for naming');
+      if (gameUser.namingUser.id !== namingUser.id) {
+        throw new UserInputError(
+          'You do not have permission to name this user'
+        );
       }
 
       namingUser.guessName = name;
@@ -133,7 +128,6 @@ export const resolvers = {
 
       room.participants[namingUserIndex].guessName = name;
 
-      await nextNamingStep(room);
       await namingUser.save();
 
       pubsub.publish(PubSubEnum.USER_UPDATE, {
@@ -166,8 +160,7 @@ export const resolvers = {
 
       room.gameStage = GameStage.NAME_STAGE;
 
-      await nextNamingStep(room);
-
+      await generateGuessQueue(room);
       await room.save();
 
       pubsub.publish(PubSubEnum.ROOM_STAGE, {

@@ -7,8 +7,6 @@ export const typeDefs = gql`
     participants: [GameUser]
     maxParticipants: Int
     gameStage: String
-    nowNaming: GameUser
-    nameSeter: GameUser
   }
 
   type RangeParticipants {
@@ -25,6 +23,8 @@ export const typeDefs = gql`
     room: Room
     isAdmin: Boolean
     isFinish: Boolean
+    namingUser: GameUser
+    seterUser: GameUser
   }
 
   type Query {

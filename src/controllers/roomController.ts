@@ -1,5 +1,5 @@
 import { UserInputError } from 'apollo-server';
-import { generateShareId } from '../helpers';
+import { generateGuessQueue, generateShareId } from '../helpers';
 import { Room } from '../models';
 import { CreateRoomArgs, GetRoomArgs } from './interfaces';
 
@@ -11,10 +11,20 @@ export const defaultParticipantsValue = Math.round(
 
 export const roomController = {
   async getRoom(_, { shareId }: GetRoomArgs) {
-    const room = await Room.findOne({ shareId })
-      .populate('participants')
-      .populate('nowNaming')
-      .populate('nameSeter');
+    const room = await Room.findOne({ shareId }).populate({
+      path: 'participants',
+      model: 'GameUser',
+      populate: [
+        {
+          path: 'namingUser',
+          model: 'GameUser',
+        },
+        {
+          path: 'seterUser',
+          model: 'GameUser',
+        },
+      ],
+    });
 
     if (!room) {
       throw new UserInputError('Room not found');
