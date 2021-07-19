@@ -8,6 +8,7 @@ import {
   GetGameUserArgs,
 } from '../controllers';
 import {
+  AnswerSendArgs,
   GameUserKickedPayload,
   GameUserKickedVariables,
   GameUserUpdatePayload,
@@ -19,7 +20,12 @@ import {
   RoomUpdatePayload,
   RoomUpdateVariables,
 } from './interfaces';
-import { generateGuessQueue, setGameAuthCookie } from '../helpers';
+import {
+  countAnswers,
+  generateGuessQueue,
+  nextStep,
+  setGameAuthCookie,
+} from '../helpers';
 import {
   ForbiddenError,
   PubSub,
@@ -29,6 +35,7 @@ import {
 import { CookiesType } from '../CookiesType';
 import { PubSubEnum } from './PubSubEnum';
 import { GameStage } from '../GameStage';
+import { AnswerEnum } from '../AnswerEnum';
 
 const pubsub = new PubSub();
 
@@ -64,6 +71,64 @@ export const resolvers = {
     },
   },
   Mutation: {
+    async sendAnswer(_, { answer }: AnswerSendArgs, { cookies }: IContext) {
+      if (!cookies[CookiesType.GameAuth]) {
+        throw new UserInputError('You do not have any game session');
+      }
+
+      if (!answer) {
+        throw new UserInputError('You can not send empty answer');
+      }
+
+      const { roomShareId, gameUserId } = JSON.parse(
+        cookies[CookiesType.GameAuth]
+      );
+
+      const room = await roomController.getRoom(_, { shareId: roomShareId });
+
+      const participants = room.participants;
+
+      const gameUser = await gameUserController.getGameUser(_, {
+        id: gameUserId,
+      });
+      const questionUser = await gameUserController.getGameUser(_, {
+        id: room.question.from,
+      });
+      const questionUserIndex = participants.findIndex(
+        (participant) => participant.id === questionUser.id
+      );
+
+      if (`${gameUser.id}` === `${room.question.from}`) {
+        throw new UserInputError('You can not answer on your question');
+      }
+
+      room.answers.push({
+        id: gameUser.id,
+        answer,
+      });
+
+      if (room.answers.length === participants.length - 1) {
+        if (countAnswers(room.answers) === AnswerEnum.Yes) {
+          questionUser.correctAnswers += 1;
+
+          if (questionUser.correctAnswers === 3) {
+            nextStep(room, questionUser);
+          }
+        } else {
+          nextStep(room, questionUser);
+        }
+
+        room.answers = [];
+        room.question = null;
+        room.participants[questionUserIndex] = questionUser;
+      }
+
+      pubsub.publish(PubSubEnum.USER_UPDATE, {
+        gameUserUpdate: room,
+      });
+
+      await room.save();
+    },
     async sendQuestion(
       _,
       { question }: QuastionSendArgs,
@@ -82,11 +147,22 @@ export const resolvers = {
       );
 
       const room = await roomController.getRoom(_, { shareId: roomShareId });
+      const participants = room.participants;
       const gameUser = await gameUserController.getGameUser(_, {
         id: gameUserId,
       });
+      const gameUserIndex = participants.findIndex(
+        (participant) => participant.id === gameUser.id
+      );
 
-      room.question = question;
+      if (room.step % participants.length !== gameUserIndex) {
+        throw new UserInputError('Now is not your turn to ask a question');
+      }
+
+      room.question = {
+        from: gameUser.id,
+        question,
+      };
 
       await room.save();
 

@@ -1,14 +1,25 @@
 import { gql } from 'apollo-server';
 
 export const typeDefs = gql`
+  type Answer {
+    id: ID
+    answer: String
+  }
+
+  type Question {
+    from: ID
+    question: String
+  }
+
   type Room {
     id: ID!
     shareId: String
     participants: [GameUser]
     maxParticipants: Int
     gameStage: String
-    question: String
-    answers: [String]
+    question: Question
+    answers: [Answer]
+    step: Int
   }
 
   type RangeParticipants {
@@ -27,6 +38,7 @@ export const typeDefs = gql`
     isFinish: Boolean
     namingUser: GameUser
     seterUser: GameUser
+    correctAnswers: Int
   }
 
   type Query {
@@ -47,6 +59,7 @@ export const typeDefs = gql`
     guessName(id: String!, name: String!): Room
     nameStageNext: Room
     sendQuestion(question: String): Room
+    sendAnswer(answer: String): Room
   }
 
   type Subscription {
