@@ -8,6 +8,8 @@ export interface IRoom extends Document {
   participants: IGameUser[];
   maxParticipants: number;
   gameStage: GameStage;
+  question: string;
+  answers: string[];
 }
 
 const roomSchema: Schema<IRoom> = new Schema({
@@ -28,6 +30,14 @@ const roomSchema: Schema<IRoom> = new Schema({
     type: String,
     default: GameStage.WAIT_STAGE,
   },
+  question: {
+    type: String,
+  },
+  answers: [
+    {
+      type: String,
+    },
+  ],
 });
 
 export const Room: Model<IRoom> = model('Room', roomSchema);

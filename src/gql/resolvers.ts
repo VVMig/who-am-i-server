@@ -15,6 +15,7 @@ import {
   GuessNameArgs,
   IContext,
   JoinRoomArgs,
+  QuastionSendArgs,
   RoomUpdatePayload,
   RoomUpdateVariables,
 } from './interfaces';
@@ -63,6 +64,38 @@ export const resolvers = {
     },
   },
   Mutation: {
+    async sendQuestion(
+      _,
+      { question }: QuastionSendArgs,
+      { cookies }: IContext
+    ) {
+      if (!cookies[CookiesType.GameAuth]) {
+        throw new UserInputError('You do not have any game session');
+      }
+
+      if (!question.trim()) {
+        throw new UserInputError('You can not send empty question');
+      }
+
+      const { roomShareId, gameUserId } = JSON.parse(
+        cookies[CookiesType.GameAuth]
+      );
+
+      const room = await roomController.getRoom(_, { shareId: roomShareId });
+      const gameUser = await gameUserController.getGameUser(_, {
+        id: gameUserId,
+      });
+
+      room.question = question;
+
+      await room.save();
+
+      pubsub.publish(PubSubEnum.USER_UPDATE, {
+        gameUserUpdate: room,
+      });
+
+      return room;
+    },
     async nameStageNext(_, __, { cookies }: IContext) {
       if (!cookies[CookiesType.GameAuth]) {
         throw new UserInputError('You do not have any game session');
