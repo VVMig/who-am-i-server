@@ -3,13 +3,24 @@ import { GameStage } from '../GameStage';
 
 import { IGameUser } from './GameUser';
 
+export interface IAnswer {
+  id: string;
+  answer: string;
+}
+
+export interface IQuestion {
+  from: string;
+  question: string;
+}
+
 export interface IRoom extends Document {
   shareId: string;
   participants: IGameUser[];
   maxParticipants: number;
   gameStage: GameStage;
-  question: string;
-  answers: string[];
+  question: IQuestion;
+  answers: IAnswer[];
+  step: number;
 }
 
 const roomSchema: Schema<IRoom> = new Schema({
@@ -31,11 +42,25 @@ const roomSchema: Schema<IRoom> = new Schema({
     default: GameStage.WAIT_STAGE,
   },
   question: {
-    type: String,
+    from: {
+      type: String,
+    },
+    question: {
+      type: String,
+    },
+  },
+  step: {
+    type: Number,
+    default: 0,
   },
   answers: [
     {
-      type: String,
+      answer: {
+        type: String,
+      },
+      id: {
+        type: String,
+      },
     },
   ],
 });
