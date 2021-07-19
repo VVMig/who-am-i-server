@@ -45,5 +45,5 @@ export interface GuessNameArgs {
 }
 
 export interface AnswerSendArgs {
-  answer: string;
+  answer: boolean;
 }

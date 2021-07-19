@@ -21,7 +21,7 @@ import {
   RoomUpdateVariables,
 } from './interfaces';
 import {
-  countAnswers,
+  isQuestionCorrect,
   generateGuessQueue,
   nextStep,
   setGameAuthCookie,
@@ -35,9 +35,9 @@ import {
 import { CookiesType } from '../CookiesType';
 import { PubSubEnum } from './PubSubEnum';
 import { GameStage } from '../GameStage';
-import { AnswerEnum } from '../AnswerEnum';
 
 const pubsub = new PubSub();
+const correctAnswersForNextStep = 3;
 
 export const resolvers = {
   Query: {
@@ -104,14 +104,14 @@ export const resolvers = {
 
       room.answers.push({
         id: gameUser.id,
-        answer,
+        value: answer,
       });
 
       if (room.answers.length === participants.length - 1) {
-        if (countAnswers(room.answers) === AnswerEnum.Yes) {
+        if (isQuestionCorrect(room.answers)) {
           questionUser.correctAnswers += 1;
 
-          if (questionUser.correctAnswers === 3) {
+          if (questionUser.correctAnswers === correctAnswersForNextStep) {
             nextStep(room, questionUser);
           }
         } else {

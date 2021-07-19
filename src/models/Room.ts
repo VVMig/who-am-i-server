@@ -5,7 +5,7 @@ import { IGameUser } from './GameUser';
 
 export interface IAnswer {
   id: string;
-  answer: string;
+  value: boolean;
 }
 
 export interface IQuestion {
@@ -45,7 +45,7 @@ const roomSchema: Schema<IRoom> = new Schema({
     from: {
       type: String,
     },
-    question: {
+    value: {
       type: String,
     },
   },
@@ -56,7 +56,7 @@ const roomSchema: Schema<IRoom> = new Schema({
   answers: [
     {
       answer: {
-        type: String,
+        type: Boolean,
       },
       id: {
         type: String,

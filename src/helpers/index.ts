@@ -1,5 +1,5 @@
 export * from './generateShareId';
 export * from './setGameAuthCookie';
 export * from './generateGuessQueue';
-export * from './countAnswers';
+export * from './isQuestionCorrect';
 export * from './nextStep';

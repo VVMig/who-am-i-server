@@ -59,7 +59,7 @@ export const typeDefs = gql`
     guessName(id: String!, name: String!): Room
     nameStageNext: Room
     sendQuestion(question: String): Room
-    sendAnswer(answer: String): Room
+    sendAnswer(answer: Boolean): Room
   }
 
   type Subscription {
