@@ -43,3 +43,7 @@ export interface GuessNameArgs {
   id: string;
   name: string;
 }
+
+export interface AnswerSendArgs {
+  answer: boolean;
+}
