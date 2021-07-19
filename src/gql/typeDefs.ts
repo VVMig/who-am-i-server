@@ -8,7 +8,7 @@ export const typeDefs = gql`
 
   type Question {
     from: ID
-    question: String
+    value: String
   }
 
   type Room {

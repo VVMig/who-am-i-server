@@ -76,7 +76,7 @@ export const resolvers = {
         throw new UserInputError('You do not have any game session');
       }
 
-      if (!answer) {
+      if (answer === undefined) {
         throw new UserInputError('You can not send empty answer');
       }
 
@@ -127,6 +127,7 @@ export const resolvers = {
         gameUserUpdate: room,
       });
 
+      await questionUser.save();
       await room.save();
     },
     async sendQuestion(
@@ -161,7 +162,7 @@ export const resolvers = {
 
       room.question = {
         from: gameUser.id,
-        question,
+        value: question,
       };
 
       await room.save();
