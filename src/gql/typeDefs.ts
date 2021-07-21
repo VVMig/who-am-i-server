@@ -3,7 +3,8 @@ import { gql } from 'apollo-server';
 export const typeDefs = gql`
   type Answer {
     id: ID
-    answer: String
+    value: Boolean
+    isGuessed: Boolean
   }
 
   type Question {
@@ -59,7 +60,7 @@ export const typeDefs = gql`
     guessName(id: String!, name: String!): Room
     nameStageNext: Room
     sendQuestion(question: String): Room
-    sendAnswer(answer: Boolean): Room
+    sendAnswer(answer: Boolean, isGuessed: Boolean): Room
   }
 
   type Subscription {
