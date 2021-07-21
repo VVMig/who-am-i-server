@@ -10,7 +10,7 @@ export interface IAnswer {
 
 export interface IQuestion {
   from: string;
-  question: string;
+  value: string;
 }
 
 export interface IRoom extends Document {
@@ -55,7 +55,7 @@ const roomSchema: Schema<IRoom> = new Schema({
   },
   answers: [
     {
-      answer: {
+      value: {
         type: Boolean,
       },
       id: {
