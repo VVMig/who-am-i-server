@@ -25,6 +25,9 @@ import {
   generateGuessQueue,
   nextStep,
   setGameAuthCookie,
+  checkPlayerFinish,
+  checkGameFinish,
+  restoreRoom,
 } from '../helpers';
 import {
   ForbiddenError,
@@ -71,7 +74,11 @@ export const resolvers = {
     },
   },
   Mutation: {
-    async sendAnswer(_, { answer }: AnswerSendArgs, { cookies }: IContext) {
+    async sendAnswer(
+      _,
+      { answer, isGuessed }: AnswerSendArgs,
+      { cookies }: IContext
+    ) {
       if (!cookies[CookiesType.GameAuth]) {
         throw new UserInputError('You do not have any game session');
       }
@@ -105,10 +112,14 @@ export const resolvers = {
       room.answers.push({
         id: gameUser.id,
         value: answer,
+        isGuessed,
       });
 
       if (room.answers.length === participants.length - 1) {
-        if (isQuestionCorrect(room.answers)) {
+        if (checkPlayerFinish(room)) {
+          questionUser.isFinish = true;
+          nextStep(room, questionUser);
+        } else if (isQuestionCorrect(room.answers)) {
           questionUser.correctAnswers += 1;
 
           if (questionUser.correctAnswers === correctAnswersForNextStep) {
@@ -117,10 +128,19 @@ export const resolvers = {
         } else {
           nextStep(room, questionUser);
         }
-
         room.answers = [];
         room.question = null;
         room.participants[questionUserIndex] = questionUser;
+      }
+
+      if (checkGameFinish(room)) {
+        await restoreRoom(room);
+
+        pubsub.publish(PubSubEnum.USER_UPDATE, {
+          gameUserUpdate: room,
+        });
+
+        return room;
       }
 
       pubsub.publish(PubSubEnum.USER_UPDATE, {
@@ -129,6 +149,8 @@ export const resolvers = {
 
       await questionUser.save();
       await room.save();
+
+      return room;
     },
     async sendQuestion(
       _,
