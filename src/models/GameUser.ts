@@ -8,7 +8,7 @@ export interface IGameUser extends Document {
   room: IRoom;
   guessName: string;
   isAdmin: boolean;
-  isFinal: boolean;
+  isFinish: boolean;
   namingUser: IGameUser;
   seterUser: IGameUser;
   correctAnswers: number;

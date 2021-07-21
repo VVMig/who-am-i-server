@@ -6,6 +6,7 @@ import { IGameUser } from './GameUser';
 export interface IAnswer {
   id: string;
   value: boolean;
+  isGuessed?: boolean;
 }
 
 export interface IQuestion {
@@ -55,6 +56,9 @@ const roomSchema: Schema<IRoom> = new Schema({
   },
   answers: [
     {
+      isGuessed: {
+        type: Boolean,
+      },
       value: {
         type: Boolean,
       },
