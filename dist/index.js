@@ -35,11 +35,11 @@ app.use('/graphql', express_1.default.json(), apollo_server_express_1.graphqlExp
 }));
 app.use('/graphiql', apollo_server_express_1.graphiqlExpress({
     endpointURL: '/graphql',
-    subscriptionsEndpoint: `ws://localhost:${PORT}/subscriptions`,
+    subscriptionsEndpoint: `ws://who-am-i-game-server.herokuapp.com/subscriptions`,
 }));
 const ws = http_1.createServer(app);
 ws.listen(PORT, () => {
-    console.log(`Apollo Server is now running on http://localhost:${PORT}`);
+    console.log(`Apollo Server is now running on https://who-am-i-game-server.herokuapp.com`);
     new subscriptions_transport_ws_1.SubscriptionServer({
         execute: graphql_1.execute,
         subscribe: graphql_1.subscribe,
