@@ -6,5 +6,9 @@
     "moduleResolution": "node",
     "outDir": "dist"
   },
+  "baseUrl": ".",
+    "paths": {
+      "apollo-cache-control": ["node_modules/apollo-cache-control"]
+    },
   "lib": ["es2015"]
 }
