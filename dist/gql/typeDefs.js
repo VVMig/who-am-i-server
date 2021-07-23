@@ -49,6 +49,7 @@ exports.typeDefs = apollo_server_1.gql `
     getRoom(shareId: String!): Room
     getRangeParticipants: RangeParticipants
     isRoomExist: Boolean
+    authorize: GameUser
   }
 
   type Mutation {

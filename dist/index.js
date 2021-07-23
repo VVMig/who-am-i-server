@@ -35,7 +35,7 @@ app.use('/graphql', express_1.default.json(), apollo_server_express_1.graphqlExp
 }));
 app.use('/graphiql', apollo_server_express_1.graphiqlExpress({
     endpointURL: '/graphql',
-    subscriptionsEndpoint: `ws://who-am-i-game-server.herokuapp.com/subscriptions`,
+    subscriptionsEndpoint: `wss://who-am-i-game-server.herokuapp.com/subscriptions`,
 }));
 const ws = http_1.createServer(app);
 ws.listen(PORT, () => {

@@ -1,1 +1,1 @@
-export const uri = 'https://who-am-i-game-server.herokuapp.com';
+export const uri = 'http://localhost:3000';

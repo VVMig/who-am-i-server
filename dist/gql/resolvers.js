@@ -31,6 +31,20 @@ exports.resolvers = {
                 };
             });
         },
+        authorize(_, __, { cookies }) {
+            return __awaiter(this, void 0, void 0, function* () {
+                console.log('1');
+                if (!cookies[CookiesType_1.CookiesType.GameAuth]) {
+                    return null;
+                }
+                console.log('1');
+                const { gameUserId } = JSON.parse(cookies[CookiesType_1.CookiesType.GameAuth]);
+                const gameUser = yield controllers_1.gameUserController.getGameUser(_, {
+                    id: gameUserId,
+                });
+                return gameUser;
+            });
+        },
         isRoomExist(_, __, { cookies, res }) {
             return __awaiter(this, void 0, void 0, function* () {
                 if (!cookies[CookiesType_1.CookiesType.GameAuth]) {

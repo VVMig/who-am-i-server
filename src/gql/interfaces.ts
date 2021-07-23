@@ -3,8 +3,8 @@ import { GetRoomArgs } from '../controllers';
 import { IRoom } from '../models';
 
 export interface IContext {
-  cookies: Record<string, string>;
-  res: Response;
+  cookies?: Record<string, string>;
+  res?: Response;
 }
 
 export interface JoinRoomArgs extends GetRoomArgs {

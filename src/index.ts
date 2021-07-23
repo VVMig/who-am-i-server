@@ -44,7 +44,7 @@ app.use(
   '/graphiql',
   graphiqlExpress({
     endpointURL: '/graphql',
-    subscriptionsEndpoint: `ws://who-am-i-game-server.herokuapp.com/subscriptions`,
+    subscriptionsEndpoint: `wss://who-am-i-game-server.herokuapp.com/subscriptions`,
   })
 );
 

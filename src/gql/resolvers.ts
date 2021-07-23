@@ -53,6 +53,23 @@ export const resolvers = {
         defaultValue: defaultParticipantsValue,
       };
     },
+    async authorize(_, __, { cookies }: IContext) {
+      console.log('1');
+
+      if (!cookies[CookiesType.GameAuth]) {
+        return null;
+      }
+
+      console.log('1');
+
+      const { gameUserId } = JSON.parse(cookies[CookiesType.GameAuth]);
+
+      const gameUser = await gameUserController.getGameUser(_, {
+        id: gameUserId,
+      });
+
+      return gameUser;
+    },
     async isRoomExist(_, __, { cookies, res }: IContext) {
       if (!cookies[CookiesType.GameAuth]) {
         return false;
