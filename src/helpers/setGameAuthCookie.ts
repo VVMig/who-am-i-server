@@ -1,6 +1,8 @@
 import { Response } from 'express';
 import { CookiesType } from '../CookiesType';
 
+const cookieMaxAge = 360000;
+
 export const setGameAuthCookie = (
   res: Response,
   gameUserId: string,
@@ -11,6 +13,11 @@ export const setGameAuthCookie = (
     JSON.stringify({
       gameUserId,
       roomShareId,
-    })
+    }),
+    {
+      maxAge: cookieMaxAge,
+      sameSite: 'none',
+      secure: true,
+    }
   );
 };
