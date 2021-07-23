@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { CookiesType } from '../CookiesType';
 
-const cookieMaxAge = 360000;
+const cookieMaxAge = 24 * 3600 * 1000;
 
 export const setGameAuthCookie = (
   res: Response,
