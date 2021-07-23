@@ -1,7 +1,6 @@
 import { UserInputError } from 'apollo-server';
 import faker from 'faker';
 import { isValidObjectId } from 'mongoose';
-import { generateGuessQueue } from '../helpers';
 
 import { GameUser } from '../models';
 import { GetGameUserArgs, CreateGameUserArgs } from './interfaces';
