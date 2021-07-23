@@ -1,1 +1,1 @@
-export const uri = 'http://localhost:3000';
+export const uri = 'https://who-am-i-chi.vercel.app';
