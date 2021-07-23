@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.setGameAuthCookie = void 0;
 const CookiesType_1 = require("../CookiesType");
-const cookieMaxAge = 360000;
+const cookieMaxAge = 24 * 3600 * 1000;
 const setGameAuthCookie = (res, gameUserId, roomShareId) => {
     res.cookie(CookiesType_1.CookiesType.GameAuth, JSON.stringify({
         gameUserId,
